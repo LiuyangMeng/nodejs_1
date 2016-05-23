@@ -62,6 +62,7 @@ app.get('/',function(req,res){
 
 });
 
+
 function getIPAdress(){
     var interfaces = require('os').networkInterfaces();
     for(var devName in interfaces){
