@@ -57,7 +57,7 @@ app.get('/',function(req,res){
     console.log('hostname:'+req.hostname+',ip:'+req.ip+',fresh:'+req.fresh+',path:'+req.path);
     console.log(getIPAdress());
     var os=require('os');
-    //console.log(os.networkInterfaces());
+    console.log(os.networkInterfaces());
     res.send('hello world get');
 
 });
