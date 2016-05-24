@@ -50,31 +50,17 @@
  */
 var express=require('express');
 var app=express();
+//引入自定义模块
+var CommonTools=require('./nodeCommonTools');
 
 //主页get请求
 app.get('/',function(req,res){
     console.log('主页get请求');
     console.log('hostname:'+req.hostname+',ip:'+req.ip+',fresh:'+req.fresh+',path:'+req.path);
-    console.log(getIPAdress());
-    var os=require('os');
-    console.log(os.networkInterfaces());
+    console.log(CommonTools.getIPAdress());
     res.send('hello world get');
 
 });
-
-
-function getIPAdress(){
-    var interfaces = require('os').networkInterfaces();
-    for(var devName in interfaces){
-        var iface = interfaces[devName];
-        for(var i=0;i<iface.length;i++){
-            var alias = iface[i];
-            if(alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal){
-                return alias.address;
-            }
-        }
-    }
-}
 
 //post请求
 app.post('/',function(req,res){
