@@ -172,7 +172,20 @@ app.post('/file_upload',imfiles.array('file1',1),function(req,res){
 var cookieParser=require('cookie-parser');
 app.use(cookieParser());
 app.get('/cookie',function (req,res) {
-   console.log('Cookie:',req.cookies)
+    console.log('Cookie:get:',req.cookies);
+    res.cookie('name','liuyang',{maxAge:2000});
+    //http状态码设置为200
+    res.writeHead(200,{'Content-Type':'text/html'});
+    res.end('22222222');
+});
+
+app.post('/cookie',function (req,res) {
+    console.log('Cookie:post:',req.cookies);
+   // res.cookie('name','liuyang',{maxAge:2000});
+    //http状态码设置为200
+    res.writeHead(200,{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'});
+    res.write(JSON.stringify(req.cookies));
+    res.end();
 });
 
 //启动服务器，监听3003
