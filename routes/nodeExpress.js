@@ -135,8 +135,10 @@ var fs=require('fs');
 //multer
 var multer=require('multer');
 app.use(urlencodeparser);
+
 //app.use(multer({ dest:'../tmp/'}));
 
+//缓存目录，注意文件的名字
 var imfiles=multer({dest:'../tmp/'});
 
 app.post('/file_upload',imfiles.array('file1',1),function(req,res){
@@ -166,13 +168,22 @@ app.post('/file_upload',imfiles.array('file1',1),function(req,res){
     });
 });
 
+//cookie管理
+var cookieParser=require('cookie-parser');
+app.use(cookieParser());
+app.get('/cookie',function (req,res) {
+   console.log('Cookie:',req.cookies)
+});
+
+//启动服务器，监听3003
 var server=app.listen(3003,function (){
-    var host=server.address().address;
+    var host=CommonTools.getIPAdress();
     var port=server.address().port;
 
     console.log('访问地址为 http://%s:%s',host,port);
 });
 
-process.on('uncaughtException',function(err){
+//捕获错误，没有经过验证
+process.on('error',function(err){
     console.error('未捕获的异常:'+err.stack);
 });
