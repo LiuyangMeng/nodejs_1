@@ -71,3 +71,7 @@ req.end();
     });
     req.write(data + "\n");
     req.end();
+
+    req.on('error',function(error){
+        console.log(error.stack);
+    });

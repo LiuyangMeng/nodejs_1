@@ -8,6 +8,6 @@
  这一功能应当属于路由还是服务器（甚至作为一个模块自身的功能）确实值得探讨，但这里暂定其为我们的HTTP服务器的功能。
  */
 
-var server=require('./server');
-var route=require('./route');
+var server=require('./nodeRoute/server');
+var route=require('./nodeRoute/route');
 server.start(route.route);

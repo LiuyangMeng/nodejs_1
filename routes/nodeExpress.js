@@ -169,16 +169,6 @@ app.post('/file_upload',imfiles.array('file1',1),function(req,res){
 });
 
 //cookie管理
-var cookieParser=require('cookie-parser');
-app.use(cookieParser());
-app.get('/cookie',function (req,res) {
-    console.log('Cookie:get:',req.cookies);
-    res.cookie('name','liuyang',{maxAge:2000});
-    //http状态码设置为200
-    res.writeHead(200,{'Content-Type':'text/html'});
-    res.end('22222222');
-});
-
 app.post('/cookie',function (req,res) {
     console.log('Cookie:post:',req.cookies);
    // res.cookie('name','liuyang',{maxAge:2000});
@@ -186,6 +176,16 @@ app.post('/cookie',function (req,res) {
     res.writeHead(200,{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'});
     res.write(JSON.stringify(req.cookies));
     res.end();
+});
+
+
+//其他访问转到404页面 get post
+app.get('*',function(req,res){
+    res.sendFile(__dirname+'/'+'404.html');
+});
+
+app.post('*',function(req,res){
+    res.sendFile(__dirname+'/'+'404.html');
 });
 
 //启动服务器，监听3003

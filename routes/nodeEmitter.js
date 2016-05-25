@@ -1,7 +1,7 @@
 /**
  * Created by DLHT on 2016-05-17.
  */
-//引入 enents
+//引入 events
 var events = require('events');
 //创建eventEmitter
 var eventEmitter = new events.EventEmitter();
