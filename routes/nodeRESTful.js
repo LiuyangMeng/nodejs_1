@@ -58,7 +58,7 @@ app.get('/addUser',function(req,res){
     });
 });
 
-//删除用户 1
+//删除用户 1    http://localhost:3004/deleteUser?id=1
 app.get('/deleteUser',function(req,res){
     //读取已经存在的数据
     fs.readFile(__dirname+'/nodeRESTful/users.json','utf8',function(err,data){
@@ -69,7 +69,7 @@ app.get('/deleteUser',function(req,res){
     });
 });
 
-//删除用户 2
+//删除用户 2    http://localhost:3004/deleteUser/2
 app.get('/deleteUser/:id',function(req,res){
     //读取已经存在的数据
     fs.readFile(__dirname+'/nodeRESTful/users.json','utf8',function(err,data){
@@ -81,16 +81,15 @@ app.get('/deleteUser/:id',function(req,res){
 });
 
 //根据用户id显示用户详情
-app.get('/:id',function(req,res){
+app.get('/more',function(req,res){
     //读取已经存在的数据
     fs.readFile(__dirname+'/nodeRESTful/users.json','utf8',function(err,data){
         data=JSON.parse(data);
-        var user=data['user'+req.params.id];
+        var user=data['user'+req.query.id];
         console.log(user);
         res.end(JSON.stringify(user));
     });
 });
-
 
 //其他访问转到404页面 get post
 app.get('*',function(req,res){
@@ -100,7 +99,6 @@ app.get('*',function(req,res){
 app.post('*',function(req,res){
     res.sendFile(__dirname+'/'+'404.html');
 });
-
 
 //启动服务器，监听3004
 var server=app.listen(3004,function (){
