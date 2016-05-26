@@ -70,6 +70,7 @@ app.post('/',function(req,res){
 
 // /del_user请求
 app.get('/del_user',function(req,res){
+    console.log(11);
    console.log('del_user 响应delete 请求');
     res.send('删除用户');
 });
