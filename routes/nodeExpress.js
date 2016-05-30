@@ -52,6 +52,9 @@ var express=require('express');
 var app=express();
 //引入自定义模块
 var CommonTools=require('./nodeCommonTools');
+//使用静态文件    注意文件查询顺序，public在get之上，请求页面会现在public中查找，然后走以下get方法
+// 如：/index.html   如果public中有index.html,则返回public中的index.html,如果没有，则查询下列app.get('/index.html',....)方法返回
+app.use(express.static('../public'));
 
 //主页get请求
 app.get('/',function(req,res){
@@ -87,14 +90,10 @@ app.get('/ab*cd',function(req,res){
     res.send(req.path+' 页面');
 });
 
-//使用静态文件
-app.use(express.static('../public'));
-
 // /index.html请求
 app.get('/index.html',function(req,res){
    res.sendFile(__dirname+'/'+'index.html');
 });
-
 // /index1.html请求
 app.get('/index1.html',function(req,res){
     res.sendFile(__dirname+'/'+'index1.html');
