@@ -6,22 +6,39 @@
 var mysql = require('mysql');
 
 //创建一个connection
-var connection = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '20110725',
-    port: '3306',
-    database: 'nodedata'
-});
+var connection;
+function handleError(){
+    connection = mysql.createConnection({
+        host: '127.0.0.1',
+        user: 'root',
+        password: '20110725',
+        port: '3306',
+        database: 'nodedata'
+    });
 
-//创建一个connection
-connection.connect(function (err) {
-    if (err) {
-        console.log('[mysql]-connection error:' + err);
-        return;
-    }
-    console.log('[mysql]-connection succeed!');
-});
+    //链接错误，2秒后重试
+    connection.connect(function (err) {
+        if (err) {
+            console.log('[mysql]-connection error:' + err);
+           setTimeout(handleError,2000);
+        }
+        console.log('[mysql]-connection succeed!');
+    });
+
+    //异常处理
+    connection.on('error',function(err){
+        console.log('[mysql]-connection on error:'+err);
+        //链接断开，自动重连
+        if(err.code=='PROTOCOL_CONNECTION_LOST'){
+            console.log('[mysql]-reconnection');
+            handleError();
+        }else{
+            throw err;
+        }
+    });
+}
+
+handleError();
 
 //插入一条记录
 var userAdd = 'insert into user(uname,uage,upass) values(?,?,?)';
@@ -120,6 +137,17 @@ var EXECPROC=function(connection,userProc,UserProc_Param){
 //SEARCH(connection,userSearch,userSearch_Param);
 //EXECPROC(connection,userProc,userProc_Param);
 
+function _SEARCH(){
+    return SEARCH(connection,userSearch,userSearch_Param);
+}
+/*
+更改mysql全局最大等待时间，使链接超时丢失。 自动重新链接
+ show global variables like 'wait_timeout';     28800
+ set global wait_timeout=9;                     9
+ */
+//setInterval(_SEARCH,10*1000);
+
+
 //关闭连接
 connection.end(function (err) {
     if (err) {
@@ -151,7 +179,7 @@ pool.on('connection',function(conn){
 });
 
 //连接池执行
-var poolSql='select * from user';
+var poolSql='select * from user where id<5';
 
 var SEARCH_POOL=function(pool,poolSql,poolSql_Param){
     //获取连接池链接
@@ -166,7 +194,15 @@ var SEARCH_POOL=function(pool,poolSql,poolSql_Param){
                console.log('[mysql]-pool-sql error:'+err);
            }
             console.log('[mysql]-pool-sql succeed:',result.length);
-            console.log('[mysql]-pool-sql succeed:',result[0]);
+
+            for(var i in result){
+                console.log(JSON.stringify(result[i]));
+                JSON.parse(JSON.stringify(result[i]),function(key,value){
+                    if(key!='')
+                   console.log('key:'+key+',value:'+value);
+                });
+            }
+
             //释放连接池链接
             conn.release();
         });
@@ -177,3 +213,8 @@ var SEARCH_POOL=function(pool,poolSql,poolSql_Param){
 
 //SEARCH_POOL(pool,poolSql,null);
 
+function _SEARCH_POOL(){
+    return SEARCH_POOL(pool,poolSql,null);
+}
+
+//setInterval(_SEARCH_POOL,10*1000);
