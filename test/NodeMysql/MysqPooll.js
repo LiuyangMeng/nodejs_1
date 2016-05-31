@@ -195,7 +195,7 @@ var SEARCH_POOL=function(pool,poolSql,poolSql_Param){
            }
             console.log('[mysql]-pool-sql succeed:',result.length);
 
-            for(var i in result){
+           for(var i in result){
                 console.log(JSON.stringify(result[i]));
                 JSON.parse(JSON.stringify(result[i]),function(key,value){
                     if(key!='')
@@ -205,13 +205,18 @@ var SEARCH_POOL=function(pool,poolSql,poolSql_Param){
 
             //释放连接池链接
             conn.release();
+
+            //回调成功信息
+            getReturnVal('pool-search',JSON.stringify(result));
         });
     });
 }
 
 
-
-//SEARCH_POOL(pool,poolSql,null);
+SEARCH_POOL(pool,poolSql,null);
+function getReturnVal(key,val){
+    console.log(key+':'+val);
+}
 
 function _SEARCH_POOL(){
     return SEARCH_POOL(pool,poolSql,null);
