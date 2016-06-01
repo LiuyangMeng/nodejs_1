@@ -5,98 +5,111 @@
 //调用nodejs的mysql模块
 var mysql = require('mysql');
 
-//
+//调用配置文件
+var config = require('../../config/config');
 
 //创建一个connection
 var connection;
-function handleError(){
+function handleConnect() {
     connection = mysql.createConnection({
-        host: '127.0.0.1',
-        user: 'root',
-        password: '20110725',
-        port: '3306',
-        database: 'nodedata'
+        host: config.db.host,
+        user: config.db.user,
+        password: config.db.password,
+        port: config.db.port,
+        database: config.db.database
     });
 
     //链接错误，2秒后重试
     connection.connect(function (err) {
         if (err) {
             console.log('[mysql]-connection error:' + err);
-           setTimeout(handleError,2000);
+            setTimeout(handleConnect, 2000);
         }
         console.log('[mysql]-connection succeed!');
     });
 
     //异常处理
-    connection.on('error',function(err){
-        console.log('[mysql]-connection on error:'+err);
+    connection.on('error', function (err) {
+        console.log('[mysql]-connection on error:' + err);
         //链接断开，自动重连
-        if(err.code=='PROTOCOL_CONNECTION_LOST'){
+        if (err.code == 'PROTOCOL_CONNECTION_LOST') {
             console.log('[mysql]-reconnection');
-            handleError();
-        }else{
+            handleConnect();
+        } else {
             throw err;
         }
     });
 }
 
-handleError();
 
 //插入一条记录
+//为了避免SQL注入攻击，需要转义用户提交的数据。可以使用connection.escape() 或者 pool.escape()
 var userAdd = 'insert into user(uname,uage,upass) values(?,?,?)';
-var userAdd_Param = ['Liuyang'+Math.round(Math.random()*10), Math.round(Math.random()*100), 'LiuyangPass'];
+var userAdd_Param = ['Liuyangqq' + Math.round(Math.random() * 10), Math.round(Math.random() * 100), 'LiuyangPas'];
 
-var INSERT = function (connection, userAdd, userAdd_Param) {
+var INSERT = function (userAdd, userAdd_Param,callBack) {
+    handleConnect();
     connection.query(userAdd, userAdd_Param, function (err, result) {
         if (err) {
             console.log('[mysql]-insert error:' + err);
             return;
         }
-        console.log('[mysql]-insert succeed:', result);
+       console.log('[mysql]-insert succeed:', result.insertId);
+        handleClose();
+        //callBack;
     })
 };
 
 //更新一条记录
-var userUpdate='update user set uname=?,uage=?,upass=? where id=?';
-var userUpdate_Param=['Yang'+Math.round(Math.random()*10),Math.round(Math.random()*10+20),'Yang1011','3'];
+var userUpdate = 'update user set uname=?,uage=?,upass=? where id=?';
+var userUpdate_Param = ['Yang' + Math.round(Math.random() * 10), Math.round(Math.random() * 10 + 20), 'Yang1011', '3'];
 
-var UPDATE=function(connection,userUpdate,userUpdate_Param){
-  connection.query(userUpdate,userUpdate_Param,function(err,result){
-    if(err){
-        console.log('[mysql]-update error:'+err);
-        return;
-    }
-      console.log('[mysql]-update succeed:',result);
-  });
+var UPDATE = function (userUpdate, userUpdate_Param,callBack) {
+    handleConnect();
+    connection.query(userUpdate, userUpdate_Param, function (err, result) {
+        if (err) {
+            console.log('[mysql]-update error:' + err);
+            return;
+        }
+        console.log('[mysql]-update succeed:', result.affectedRows);
+        handleClose();
+        //callBack();
+    });
 };
 
 //删除一条记录
-var userDelete='delete from user where id=?';
-var userDelete_Param=[Math.round(Math.random()*10)];
+var userDelete = 'delete from user where id=?';
+var userDelete_Param = [3];
 
-var DELETE=function(connection,userDelete,userDelete_Param){
-    connection.query(userDelete,userDelete_Param,function(err,result){
-       if(err){
-           console.log('[mysql]-delete error:'+err);
-       }
-        console.log('[mysql]-delete succeed:',result);
+var DELETE = function (userDelete, userDelete_Param,callBack) {
+    handleConnect();
+    connection.query(userDelete, userDelete_Param, function (err, result) {
+        if (err) {
+            console.log('[mysql]-delete error:' + err);
+        }
+        console.log('[mysql]-delete succeed:', result.affectedRows);
+        handleClose();
+        //callBack;
     });
 };
 
 //查询记录
-var userSearch='select * from user';
-var userSearch_Param=[];
+var userSearch = 'select * from user';
+var userSearch_Param = [];
 
-var SEARCH=function(connection,userSearch,userSearch_Param){
-  connection.query(userSearch,userSearch_Param,function(err,result){
-      if(err){
-          console.log('[mysql]-search error:'+err);
-      }
-      console.log('[mysql]-search succeed:',result);
-    /*  for(var rowid in result){
-          console.log(result[rowid]);
-      }*/
-  });
+var SEARCH = function (userSearch, userSearch_Param,callBack) {
+    handleConnect();
+    connection.query(userSearch, userSearch_Param, function (err, result) {
+        if (err) {
+            console.log('[mysql]-search error:' + err);
+        }
+        console.log('[mysql]-search succeed:', result.length);
+        /*  for(var rowid in result){
+         console.log(result[rowid]);
+         }*/
+        handleClose();
+        //callBack;
+    });
 };
 
 //调用存储过程
@@ -115,113 +128,56 @@ var SEARCH=function(connection,userSearch,userSearch_Param){
  set ExtReturnVal=0;
  select ExtReturnVal;
  END
-*/
+ */
 
-var userProc='call ADD_User(?,?,?,@ExtReturnVal);';
-var userProc_Param=['Mneng'+Math.round(Math.random()*10),'MengPass',Math.round(Math.random()*100)];
+var userProc = 'call ADD_User(?,?,?,@ExtReturnVal);';
+var userProc_Param = ['Mneng' + Math.round(Math.random() * 10), 'MengPass', Math.round(Math.random() * 100)];
 
-var EXECPROC=function(connection,userProc,UserProc_Param){
-  connection.query(userProc,userProc_Param,function(err,result){
-    if(err){
-        console.log('[mysql]-proc error:'+err);
-    }
-      console.log('[mysql]-proc succeed:',result);
-      console.log('[mysql]-proc ExtReturnVal:',result[0][0].ExtReturnVal);
-  });
+var EXECPROC = function (userProc, userProc_Param,callback) {
+    handleConnect();
+    connection.query(userProc, userProc_Param, function (err, result) {
+        if (err) {
+            console.log('[mysql]-proc error:' + err);
+        }
+        //console.log('[mysql]-proc succeed:', result);
+         console.log('[mysql]-proc ExtReturnVal:', result[0][0].ExtReturnVal);
+        handleClose();
+        //callback;
+    });
+};
+
+//关闭连接
+var handleClose= function () {
+    connection.end(function (err) {
+        if (err) {
+            console.log('[mysql]-close error:' + err);
+            return;
+        }
+       // console.log('[mysql]-close succeed!');
+    });
 };
 
 
+//INSERT(userAdd,userAdd_Param,null);
+//UPDATE(userUpdate,userUpdate_Param,null);
+//DELETE(userDelete,userDelete_Param,null);
+//SEARCH(userSearch, userSearch_Param,null);
+//EXECPROC(userProc,userProc_Param,null);
 
 
-//INSERT(connection,userAdd,userAdd_Param);
-//UPDATE(connection,userUpdate,userUpdate_Param);
-//DELETE(connection,userDelete,userDelete_Param);
-//SEARCH(connection,userSearch,userSearch_Param);
-//EXECPROC(connection,userProc,userProc_Param);
-
-function _SEARCH(){
-    return SEARCH(connection,userSearch,userSearch_Param);
+function _SEARCH() {
+    return SEARCH(userSearch, userSearch_Param);
 }
 /*
-更改mysql全局最大等待时间，使链接超时丢失。 自动重新链接
+ 更改mysql全局最大等待时间，使链接超时丢失。 自动重新链接
  show global variables like 'wait_timeout';     28800
  set global wait_timeout=9;                     9
  */
 //setInterval(_SEARCH,10*1000);
 
-
-//关闭连接
-connection.end(function (err) {
-    if (err) {
-        console.log('[mysql]-close error:' + err);
-        return;
-    }
-    console.log('[mysql]-close succeed!');
-});
+exports.insertSql=INSERT;
+exports.updateSql=UPDATE;
+exports.deleteSql=SEARCH;
+exports.callProSql=EXECPROC;
 
 
-
-
-
-//创建一个连接池
-var pool = mysql.createPool({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '20110725',
-    port: '3306',
-    database: 'nodedata',
-    waitForConnections:'true',  //　当连接池没有连接或超出最大限制时，设置为true且会把连接放入队列，设置为false会返回error
-    connectionLimit:'20',       //连接数限制，默认：10
-    queueLimit:'0'              //最大连接请求队列限制，设置为0表示不限制，默认：0
-});
-
-//监听链接使用
-pool.on('connection',function(conn){
-    console.log('[mysql]-pool-conn get:',conn.threadId);
-});
-
-//连接池执行
-var poolSql='select * from user where id<5';
-
-var SEARCH_POOL=function(pool,poolSql,poolSql_Param){
-    //获取连接池链接
-    pool.getConnection(function (err,conn){
-        if(err){
-            console.log('[mysql]-pool-getConnection error:'+err);
-        }
-        console.log('[mysql]-pool-getConnection succeed:',conn.threadId);
-
-        conn.query(poolSql,poolSql_Param,function (err,result){
-           if(err){
-               console.log('[mysql]-pool-sql error:'+err);
-           }
-            console.log('[mysql]-pool-sql succeed:',result.length);
-
-           for(var i in result){
-                console.log(JSON.stringify(result[i]));
-                JSON.parse(JSON.stringify(result[i]),function(key,value){
-                    if(key!='')
-                   console.log('key:'+key+',value:'+value);
-                });
-            }
-
-            //释放连接池链接
-            conn.release();
-
-            //回调成功信息
-            getReturnVal('pool-search',JSON.stringify(result));
-        });
-    });
-}
-
-
-SEARCH_POOL(pool,poolSql,null);
-function getReturnVal(key,val){
-    console.log(key+':'+val);
-}
-
-function _SEARCH_POOL(){
-    return SEARCH_POOL(pool,poolSql,null);
-}
-
-//setInterval(_SEARCH_POOL,10*1000);
