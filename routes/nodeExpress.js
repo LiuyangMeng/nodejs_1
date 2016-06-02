@@ -178,6 +178,10 @@ app.post('/cookie',function (req,res) {
     res.end();
 });
 
+//测试jade文件
+app.get('/showu',function(req,res){
+    res.render(__dirname+'/showu.jade',{items:['1','3']});
+});
 
 //其他访问转到404页面 get post
 app.get('*',function(req,res){

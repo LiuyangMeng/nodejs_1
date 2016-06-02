@@ -1,6 +1,6 @@
 /**
  * Created by DLHT on 2016-05-30.
- * 使用nodejs的mysql模块
+ * 使用nodejs的mysql模块 单一链接
  */
 //调用nodejs的mysql模块
 var mysql = require('mysql');
@@ -157,7 +157,6 @@ var handleClose= function () {
     });
 };
 
-
 //INSERT(userAdd,userAdd_Param,null);
 //UPDATE(userUpdate,userUpdate_Param,null);
 //DELETE(userDelete,userDelete_Param,null);
@@ -177,7 +176,8 @@ function _SEARCH() {
 
 exports.insertSql=INSERT;
 exports.updateSql=UPDATE;
-exports.deleteSql=SEARCH;
+exports.deleteSql=DELETE;
+exports.querySql=SEARCH;
 exports.callProSql=EXECPROC;
 
 

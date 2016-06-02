@@ -1,0 +1,52 @@
+//-增加用户
+doctype html
+html
+    head
+        title= 增加一个新用户
+        style(type='text/css').
+            .sty {
+                cursor: pointer;
+                font-size: 20px;
+                text-decoration: none;
+            }
+
+            .txtc {
+                width: 100px;
+                text-align: left;
+            }
+        script(type='text/javascript').
+            function subuser() {
+                if (window.document.getElementById('uname') == undefined || window.document.getElementById('uname').value == '') {
+                    alert('用户名不能为空');
+                    return;
+                }
+                if (window.document.getElementById('upass') == undefined || window.document.getElementById('upass').value == '') {
+                    alert('通用密码不能为空');
+                    return;
+                }
+                window.document.getElementById('form1').submit();
+            }
+    body
+        form#form1(action='/addUser' method='post')
+            h2(style='text-align:center') 增加一个新用户
+            table
+                tr
+                    td
+                        label 用户名:
+                    td(class='txtc')
+                        input#uname(type='text',name='uname')
+                tr
+                    td
+                        label 年龄：
+                    td(class='txtc')
+                        select#uage(name='uage')
+                            option(value='12',selected='selected') 12
+                            option(value='14') 14
+                            option(value='18') 18
+                            option(value='20') 20
+                tr
+                    td
+                        label 通用密码:
+                    td(class='txtc')
+                        input#upass(type='password',name='upass')
+            input#sub1(type='button',value='提交数据',onclick='subuser();')

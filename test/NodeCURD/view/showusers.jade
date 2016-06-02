@@ -1,0 +1,36 @@
+//-用户列表
+doctype html
+html
+    head
+        title= 用户列表信息
+        style.
+            .sty {
+                cursor: pointer;
+                font-size: 20px;
+                text-decoration: none;
+            }
+            table tr td{
+                width:100px;
+                text-align: left;
+            }
+
+            table tr th {
+                width: 100px;
+                text-align: left;
+            }
+    body
+        h2(style='text-align:center') 用户列表显示
+    table
+        tr
+        th 用户名
+        th 年龄
+        th 通用密码
+        each user in JSON.parse(results)
+          tr
+            td=user.uname
+            td=user.uage
+            td=user.upass
+
+    a(href='/index',title='返回主页',class='sty') 返回主页信息<br/>
+
+
