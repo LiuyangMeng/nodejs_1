@@ -5,7 +5,7 @@ var fs=require('fs');
 var data='';
 
 //创建可读流
-var readerStream=fs.createReadStream('../test/input1.txt');
+var readerStream=fs.createReadStream('../../public/files/input1.txt');
 
 //设置编码格式
 readerStream.setEncoding('utf8');
@@ -26,7 +26,7 @@ console.log('数据读取处理完毕\n');
 var indata='测试写入数据问题';
 
 //创建一个写入流，将数据写入output1.txt中
-var writerStream=fs.createWriteStream('../test/output1.txt');
+var writerStream=fs.createWriteStream('../../public/files/output1.txt');
 //使用utf8写入数据
 writerStream.write(indata,'utf8');
 //标记文件末尾
@@ -42,8 +42,8 @@ writerStream.on('error',function(err){
 console.log('所有数据已经写入');
 
 //管道流测试
-var readerStream1=fs.createReadStream('../test/input1.txt');
-var writerStream1=fs.createWriteStream('../test/output1.txt');
+var readerStream1=fs.createReadStream('../../public/files/input1.txt');
+var writerStream1=fs.createWriteStream('../../public/files/output1.txt');
 readerStream1.pipe(writerStream1);
 
 console.log('管道完毕');
@@ -54,7 +54,7 @@ var zlib=require('zlib');
 fs.createReadStream('../test/input1.txt').pipe(zlib.createGzip()).pipe(fs.createWriteStream('../test/input1.txt.gz'));
 console.log('文件压缩完毕');*/
 //解压input1.txt.gz到inputgz.txt
-fs.createReadStream('../test/input1.txt.gz').pipe(zlib.createGunzip()).pipe(fs.createWriteStream('../test/inputgz.txt'));
+fs.createReadStream('../../public/files/input1.txt.gz').pipe(zlib.createGunzip()).pipe(fs.createWriteStream('../../public/files/inputgz.txt'));
 console.log('文件解压缩完毕');
 
 

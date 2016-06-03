@@ -28,7 +28,7 @@ var express=require('express');
 var app=express();
 var fs=require('fs');
 //引入自定义模块
-var CommonTools=require('./nodeCommonTools');
+var CommonTools=require('./../Tools/nodeCommonTools');
 
 //get 显示所有用户列表
 app.get('/listUsers',function(req,res){
@@ -93,11 +93,11 @@ app.get('/more',function(req,res){
 
 //其他访问转到404页面 get post
 app.get('*',function(req,res){
-    res.sendFile(__dirname+'/'+'404.html');
+    res.sendFile(global.APP_PATH+'/views/404.html');
 });
 
 app.post('*',function(req,res){
-    res.sendFile(__dirname+'/'+'404.html');
+    res.sendFile(global.APP_PATH+'/views/404.html');
 });
 
 //启动服务器，监听3004

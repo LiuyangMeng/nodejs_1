@@ -10,7 +10,7 @@ var bff=new Buffer(1024);
 
 //异步打开文件
 console.log('准备打开文件');
-fs.open('../test/input1.txt','r+',function(err,fd){
+fs.open('../../public/files/input1.txt','r+',function(err,fd){
    if(err){
        return console.error(err);
    }
@@ -36,14 +36,14 @@ fs.open('../test/input1.txt','r+',function(err,fd){
 });
 
 //获取文件信息
-fs.stat('../test/input1.txt',function(err,status){
+fs.stat('../../public/files/input1.txt',function(err,status){
     console.log(status.isFile());
     console.log(status);
 })
 
 //写文件信息
 console.log('准备写入文件');
-fs.writeFile('../test/input2.txt','I am written by nodejs',function(err){
+fs.writeFile('../../public/files/input2.txt','I am written by nodejs',function(err){
    if(err){
        return console.error(err);
    }
@@ -59,7 +59,7 @@ fs.writeFile('../test/input2.txt','I am written by nodejs',function(err){
 });
 
 //文件截取
-fs.open('../test/input3.txt','r+',function(err,fd){
+fs.open('../../public/files/input3.txt','r+',function(err,fd){
    if(err){
        return console.log(err);
    }
@@ -94,7 +94,7 @@ fs.open('../test/input3.txt','r+',function(err,fd){
 });
 
 //删除文件
-fs.unlink('../test/input4.txt',function(err){
+fs.unlink('../../public/files/input4.txt',function(err){
    if(err){
        return console.log(err);
    }
@@ -103,7 +103,7 @@ fs.unlink('../test/input4.txt',function(err){
 
 //读取目录
 console.log('读取test目录的文件');
-fs.readdir('../test',function(err,files){
+fs.readdir('../../public/files',function(err,files){
     if(err){
         return console.error(err);
     }

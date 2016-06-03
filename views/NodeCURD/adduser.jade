@@ -3,6 +3,7 @@ doctype html
 html
     head
         title= 增加一个新用户
+        script(type='text/javascript',src="../../../public/javascripts/jquery-2.2.4.min.js")
         style(type='text/css').
             .sty {
                 cursor: pointer;
@@ -14,6 +15,7 @@ html
                 width: 100px;
                 text-align: left;
             }
+
         script(type='text/javascript').
             function subuser() {
                 if (window.document.getElementById('uname') == undefined || window.document.getElementById('uname').value == '') {
@@ -34,19 +36,24 @@ html
                     td
                         label 用户名:
                     td(class='txtc')
-                        input#uname(type='text',name='uname')
+                        input#uname(type='text',name='uname',value='#{uname}')
                 tr
                     td
-                        label 年龄：
+                        label 年龄:
                     td(class='txtc')
+                        input#hiduage(hidden='hidden' value='#{uage}')
                         select#uage(name='uage')
-                            option(value='12',selected='selected') 12
+                            option(value='12') 12
                             option(value='14') 14
                             option(value='18') 18
                             option(value='20') 20
+                            script(type='text/javascript').
+                                var age=$('#uage').val();
+                                alert(age);
+
                 tr
                     td
                         label 通用密码:
                     td(class='txtc')
-                        input#upass(type='password',name='upass')
+                        input#upass(type='password',name='upass',value='#{upass}')
             input#sub1(type='button',value='提交数据',onclick='subuser();')

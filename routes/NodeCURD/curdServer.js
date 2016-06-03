@@ -7,7 +7,7 @@
 var express = require('express');
 var app = express();
 //引入自定义模块
-var CommonTools = require('../../routes/nodeCommonTools');
+var CommonTools = require('../Tools/nodeCommonTools');
 //引入db的dao层
 var curdDao = require('./curdServerDao');
 
@@ -19,7 +19,9 @@ app.use(urlencodeparser);
 
 //使用静态文件    注意文件查询顺序，public在get之上，请求页面会现在public中查找，然后走以下get方法
 // 如：/index.html   如果public中有index.html,则返回public中的index.html,如果没有，则查询下列app.get('/index.html',....)方法返回
-//app.use(express.static('../public'));
+
+//app.set('views', __dirname + '/views');
+app.use(express.static(require('path').join(__dirname,'public')));
 
 //主页get请求
 app.get('/', function (req, res) {
@@ -33,7 +35,7 @@ app.get('/', function (req, res) {
 // /index请求
 app.get('/index', function (req, res) {
     console.log('/index 被请求');
-    res.render(__dirname + '/view/index.jade');
+    res.render(global.APP_PATH+'/views/NodeCURD/index.jade');
 });
 
 // /showUsers请求
@@ -45,31 +47,40 @@ app.get('/showUsers', function (req, res) {
 // /pre_addUser请求
 app.get('/pre_addUser', function (req, res) {
     console.log('/pre_addUser 被请求');
-    res.render(__dirname + '/view/adduser.jade');
+    res.render(global.APP_PATH+'/views/NodeCURD/adduser.jade');
 });
 
-//  /addUser 请求
+//  /addUser 请求 post
 app.post('/addUser', urlencodeparser, function (req, res) {
     console.log('/addUser 被请求');
     //获取前台参数
     var param = [req.body.uname,req.body.uage,req.body.upass];
-    curdDao.addUserSql_Pool(req, res, 'insert into user(uname,uage,upass) value (?,?,?)', param, null);
+    res.render(global.APP_PATH+'/views/NodeCURD/adduser.jade',{
+        'uname':req.body.uname,'uage':req.body.uage,'upass':req.body.upass });
+    //curdDao.addUserSql_Pool(req, res, 'insert into user(uname,uage,upass) value (?,?,?)', param, null);
 });
 
+// /del_User请求 get
+app.get('/del_User', function (req, res) {
+    console.log('/del_User 被请求');
+    //获取链接后面带着的参数 req.query.id
+    var param=req.query.uid;
+    if(param==undefined||param==''){
+        //参数错误，无法删除
+        res.render(global.APP_PATH+'/views/NodeCURD/adduser.jade',{
+            'user':{'uname':'11'}
+        });
+        return;
+    }
 
 
-// /del_user请求
-app.get('/del_user', function (req, res) {
-    console.log(11);
-    console.log('del_user 响应delete 请求');
-    res.send('删除用户');
 });
 
 
 // /index请求
 app.get('/index.html', function (req, res) {
     console.log('/index.html 被请求');
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(global.APP_PATH+'/views/NodeCURD/index.html');
 });
 
 // /process_get请求 get
@@ -105,11 +116,11 @@ var multer = require('multer');
 //app.use(multer({ dest:'../tmp/'}));
 
 //缓存目录，注意文件的名字
-var imfiles = multer({dest: '../tmp/'});
+var imfiles=multer({dest:'../../public/tmp'});
 
 app.post('/file_upload', imfiles.array('file1', 1), function (req, res) {
     console.log(req.files[0]);
-    var dest_file = __dirname + '/uploads/' + Date.now() + req.files[0].originalname;
+    var dest_file = global.APP_PATH+'/public/uploads/'+ Date.now() + req.files[0].originalname;
     fs.readFile(req.files[0].path, function (err, data) {
         fs.writeFile(dest_file, data, function (err) {
             console.log(dest_file);
@@ -145,18 +156,13 @@ app.post('/cookie', function (req, res) {
     res.end();
 });
 
-//测试jade文件
-app.get('/showu', function (req, res) {
-    res.render(__dirname + '/showu.jade', {items: ['1', '3']});
-});
-
 //其他访问转到404页面 get post
 app.get('*', function (req, res) {
-    res.sendFile(__dirname + '/view/' + '404.html');
+    res.sendFile(global.APP_PATH+'/views/404.html');
 });
 
 app.post('*', function (req, res) {
-    res.sendFile(__dirname + '/view/' + '404.html');
+    res.sendFile(global.APP_PATH+'/views/404.html');
 });
 
 //启动服务器，监听3006

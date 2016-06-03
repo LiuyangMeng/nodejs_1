@@ -48,13 +48,29 @@
  res.type（）：设置Content-Type的MIME类型
 
  */
+
 var express=require('express');
 var app=express();
+
+//var app=require('../../app');
+
+var route=express.Router();
+
+route.use(function(req,res,next){
+    console.log('route 经过路由器过滤');
+    next();
+});
+
+//路由所有链接
+app.use('*',route);
+
+
+
 //引入自定义模块
-var CommonTools=require('./nodeCommonTools');
+var CommonTools=require('../Tools/nodeCommonTools');
 //使用静态文件    注意文件查询顺序，public在get之上，请求页面会现在public中查找，然后走以下get方法
 // 如：/index.html   如果public中有index.html,则返回public中的index.html,如果没有，则查询下列app.get('/index.html',....)方法返回
-app.use(express.static('../public'));
+//app.use(express.static('../../public'));
 
 //主页get请求
 app.get('/',function(req,res){
@@ -73,7 +89,6 @@ app.post('/',function(req,res){
 
 // /del_user请求
 app.get('/del_user',function(req,res){
-    console.log(11);
    console.log('del_user 响应delete 请求');
     res.send('删除用户');
 });
@@ -92,11 +107,8 @@ app.get('/ab*cd',function(req,res){
 
 // /index.html请求
 app.get('/index.html',function(req,res){
-   res.sendFile(__dirname+'/'+'index.html');
-});
-// /index1.html请求
-app.get('/index1.html',function(req,res){
-    res.sendFile(__dirname+'/'+'index1.html');
+    console.log('/index.html 被访问');
+   res.sendFile(global.APP_PATH+'/views/NodeTest/index.html');
 });
 
 // /process_get请求 get
@@ -139,11 +151,10 @@ app.use(urlencodeparser);
 //app.use(multer({ dest:'../tmp/'}));
 
 //缓存目录，注意文件的名字
-var imfiles=multer({dest:'../tmp/'});
-
+var imfiles=multer({dest:'../../public/tmp'});
 app.post('/file_upload',imfiles.array('file1',1),function(req,res){
     console.log(req.files[0]);
-    var dest_file=__dirname+'/uploads/'+Date.now()+req.files[0].originalname;
+    var dest_file=global.APP_PATH+'/public/uploads/'+Date.now()+req.files[0].originalname;
     fs.readFile(req.files[0].path,function(err,data){
        fs.writeFile(dest_file,data,function(err){
            console.log(dest_file);
@@ -178,18 +189,13 @@ app.post('/cookie',function (req,res) {
     res.end();
 });
 
-//测试jade文件
-app.get('/showu',function(req,res){
-    res.render(__dirname+'/showu.jade',{items:['1','3']});
-});
-
 //其他访问转到404页面 get post
 app.get('*',function(req,res){
-    res.sendFile(__dirname+'/'+'404.html');
+    res.sendFile(global.APP_PATH+'/views/404.html');
 });
 
 app.post('*',function(req,res){
-    res.sendFile(__dirname+'/'+'404.html');
+    res.sendFile(global.APP_PATH+'/views/404.html');
 });
 
 //启动服务器，监听3003

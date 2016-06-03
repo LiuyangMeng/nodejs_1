@@ -6,7 +6,7 @@
 var mysql = require('mysql');
 
 //调用配置文件
-var config = require('../../config/config');
+var config = require('../../public/config/config');
 
 //定义变量
 var pool;

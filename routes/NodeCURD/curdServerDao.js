@@ -6,7 +6,7 @@
 var mysql = require('mysql');
 
 //调用配置文件
-var config = require('../../config/config');
+var config = require('../../public/config/config');
 
 //定义变量
 var pool;
@@ -129,6 +129,7 @@ var AddUser_POOL = function (req,res,poolSql, poolSql_Param,callBack) {
             conn.release();
 
             res.render(__dirname+'/view/index.jade',{'info':'添加用户成功'});
+
             //res.header('Content-Type', 'text/javascript');
             //res.end('<button onclick=\"window.location.href=\"/index\"\">添加成功</button>');
             //res.end('<script src=\"text/javascript\">if(confirm(\"添加成功，是否返回首页\")){location.href=\"/index\"; }</script>');
