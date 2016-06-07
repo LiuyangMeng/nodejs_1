@@ -63,8 +63,8 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-require('./routes/index');
+//require('./routes/index');
 //require('./routes/NodeTest/nodeExpress');
-//require('./routes/NodeCURD/curdServer');
+require('./routes/NodeCURD/curdServer');
 
 

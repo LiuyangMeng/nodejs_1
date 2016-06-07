@@ -11,15 +11,21 @@ html
             }
     body
         form(action='/index',method='get',name='form1',id='form1')
-        h2(style='text-align:center') Nodejs+mysql+jade 的CURD测试
+        h2(style='text-align:center') Nodejs+mysql(pool)+jade 的CURD测试
         b(style='color:green;') #{info} <br/>
-        table
+        table(style='margin:0 auto;')
             tr
                 td
-                a(href='/showUsers',title='用户列表',class='sty') 显示当前用户列表<br/>
+                    a(href='/showUsers',title='用户列表',class='sty') 用户列表<br/>
             tr
                 td
-                a(href='/pre_addUser',title='增加用户',class='sty') 增加用户<br/>
+                    a(href='/pre_addUser',title='增加用户',class='sty') 增加用户<br/>
+            tr
+                td
+                    a(href='/pre_delUser',title='删除用户',class='sty') 删除用户<br/>
+            tr
+                td
+                    a(href='/pre_upUser',title='更新用户',class='sty') 更新用户<br/>
 
 
 

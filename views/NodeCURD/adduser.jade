@@ -3,7 +3,7 @@ doctype html
 html
     head
         title= 增加一个新用户
-        script(type='text/javascript',src="../../../public/javascripts/jquery-2.2.4.min.js")
+        script(type='text/javascript',src='../../public/javascripts/jquery-2.2.4.min.js')
         style(type='text/css').
             .sty {
                 cursor: pointer;
@@ -18,20 +18,31 @@ html
 
         script(type='text/javascript').
             function subuser() {
-                if (window.document.getElementById('uname') == undefined || window.document.getElementById('uname').value == '') {
+                if ($('#uname') == undefined || $('#uname').val() == '') {
                     alert('用户名不能为空');
                     return;
                 }
-                if (window.document.getElementById('upass') == undefined || window.document.getElementById('upass').value == '') {
+                if ($('#upass') == undefined || $('#upass').val() == '') {
                     alert('通用密码不能为空');
                     return;
                 }
-                window.document.getElementById('form1').submit();
+                $('#form1').submit();
             }
-    body
+            function checknull(){
+                if($('#uname').val()=='undefined'){
+                    $('#uname').val('');
+                }
+                if ($('#upass').val() == 'undefined') {
+                    $('#upass').val('');
+                }
+                if ($('#uage').val() == 'undefined') {
+                    $('#uage').val('14');
+                }
+            }
+    body(onload='checknull()')
         form#form1(action='/addUser' method='post')
             h2(style='text-align:center') 增加一个新用户
-            table
+            table(style='margin:0 auto;')
                 tr
                     td
                         label 用户名:
@@ -47,10 +58,6 @@ html
                             option(value='14') 14
                             option(value='18') 18
                             option(value='20') 20
-                            script(type='text/javascript').
-                                var age=$('#uage').val();
-                                alert(age);
-
                 tr
                     td
                         label 通用密码:

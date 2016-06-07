@@ -1,0 +1,88 @@
+//-更新用户
+doctype html
+html
+    head
+        title=更新一个老用户
+        script(type='text/javascript',src="../../../public/javascripts/jquery-2.2.4.min.js")
+        style(type='text/css').
+            .sty {
+                cursor: pointer;
+                font-size: 20px;
+                text-decoration: none;
+            }
+
+            .txtc {
+                width: 100px;
+                text-align: left;
+            }
+
+        script(type='text/javascript').
+            var upid=-1;
+            //更新数据在下一行追加数据
+            function openuser(uid,uname,uage,upass){
+                if(uid==undefined){
+                    alert('请在页面按流程操作');
+                    return;
+                }
+                if(upid>=0){
+                    if(confirm('您有未保存的更新，是否撤销？')){
+                        $('#trtr-'+upid).remove();
+                    }else{
+                        return;
+                    };
+                }
+
+                $('#tr-'+uid).after('<tr id=\'trtr-'+uid+'\'><td><input type=\'text\' id=\'upuname\' value=\''+uname+'\'/></td>' +
+                        '<td><select id=\'upuage\'><option value=\'12\'>12</option><option value=\'14\'>14</option><option value=\'18\'>18</option></select></td>' +
+                        '<td><input type=\'password\' id=\'upupass\' value=\''+upass+'\'/></td>' +
+                        '<td><input type=\'button\' onclick=\'saveup('+uid+')\' style=\'background:rgba(128, 111, 78, 0.43);\'  value=\'确认\'/></td></tr>');
+                $('#upuage').val(uage);
+                upid=uid;
+            }
+            function saveup(uid) {
+                var name=$('#upuname').val();
+                var age=$('#upuage').val();
+                var pass=$('#upupass').val();
+                //确保更新信息完整性
+                if(name==''||age==''||pass==''){
+                    alert('请确认您更新信息完整！');
+                    $('#upuname').focus();
+                    retrun;
+                }
+                //采用异步更新，更新完毕刷新页面
+                $.ajax({
+                    type: 'post',
+                    url: '/upUser?flag=' + Math.random(),
+                    data: 'id='+uid+'&name='+name+'&age='+age+'&pass='+pass,
+                    success: function (data) {
+                        //后台接受到更新请求
+                        if (data == 'getknow') {
+                            //删除更新框并重置更新框标识
+                            $('#trtr-' + uid).remove();
+                            upid=-1;
+                            alert('提交更新成功，点击确认页面将自动刷新');
+                            //刷新页面
+                            window.location.reload();
+                        } else {
+                            alert('提交更新失败');
+                        }
+                    }
+                });
+            }
+    body
+        form#form1
+            h2(style='text-align:center') 更新一个老用户
+            table(style='margin:0 auto;')
+                tr
+                    th 用户名
+                    th 年龄
+                    th 通用密码
+                    th 操作
+                    each user in JSON.parse(results)
+                        tr(id='tr-' + user.id)
+                            td=user.uname
+                            td=user.uage
+                            td=user.upass
+                            td
+                                input#delbut(type='button',value='更新',onclick='openuser(\''+user.id+'\',\''+user.uname+'\',\''+user.uage+'\',\''+user.upass+'\')')
+            a(href='/index',title='返回主页',class='sty') 返回主页信息<br/>
