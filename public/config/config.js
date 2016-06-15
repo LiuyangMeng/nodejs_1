@@ -18,6 +18,14 @@ var config={
         connectionLimit:'20',       //连接数限制，默认：10
         queueLimit:'0'              //最大连接请求队列限制，设置为0表示不限制，默认：0
         //后续可加入更多的信息
+    },
+    //mongodb配置信息
+    mongodb:{
+        host: '127.0.0.1',          //访问主机名称
+        port: '27017',              //mongodb访问端口
+        database: 'testdb',         //数据库名称
+        user: 'testdb',             //数据库认证用户名
+        password: '20110725'        //数据库认证密码
     }
     //其他配置文件信息
 };

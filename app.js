@@ -65,6 +65,6 @@ module.exports = app;
 
 //require('./routes/index');
 //require('./routes/NodeTest/nodeExpress');
-require('./routes/NodeCURD/curdServer');
-
+//require('./routes/NodeCURD/curdServer');
+require('./routes/NodeMongoDB/curdMongo');
 

@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "mongodb":"~2.1.18",
     "mysql":"~2.10.2",
     "multer": "~1.1.0",
     "body-parser": "~1.13.2",
