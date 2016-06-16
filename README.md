@@ -2,6 +2,9 @@
 
 This project for test nodejs new function.
 
+2016-06-16
+finish Nodejs+MongoDB(coon)+jade CURD,you can test
+
 2016-06-07
 finish Nodejs+mysql(pool)+jade CURD,you can test
 next,i will try to use mongodb
