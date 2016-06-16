@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页网页</title>
+</head>
+<script type="text/javascript">
+    function checkall(){
+        var methodval=document.getElementById('methid').value;
+        document.forms[0].method=methodval;
+        var typeid=document.getElementById('typeid').value;
+       //普通表单提交
+        if(typeid==''){
+            document.forms[0].submit();
+        }else{
+        //文件上传
+            document.forms[0].action='/file_upload';
+            document.forms[0].method='post';
+            document.forms[0].enctype=typeid;
+            document.forms[0].submit();
+        }
+    }
+</script>
+<body>
+<form action="http://127.0.0.1:3003/process_get">
+    姓:<input type="text" id="FirstName" name="FirstName"/><br/>
+    名:<input type="text" id="SecondName" name="SecondName"/><br/>
+    提交方式:<select id="methid">
+    <option value="post">POST</option>
+    <option value="get" selected>GET</option>
+</select><br/>
+    <input type="file" name="file1" id="file1"/><br/>
+    提交类型:<select id="typeid">
+    <option value="" selected>表单提交</option>
+    <option value="multipart/form-data">文件提交</option>
+</select><br/>
+    <input type="button" id="sub" value="提交" onclick="checkall();"/>
+</form>
+</body>
+</html>

@@ -1,0 +1,53 @@
+//-删除用户
+doctype html
+html
+    head
+        title 删除一个老用户
+        script(type='text/javascript',src="../../../public/javascripts/jquery-2.2.4.min.js")
+        //-每隔20s刷新一次页面信息
+        //meta(http-equiv='refresh' content='20')
+        style(type='text/css').
+            .sty {
+                cursor: pointer;
+                font-size: 20px;
+                text-decoration: none;
+            }
+
+            .txtc {
+                width: 100px;
+                text-align: left;
+            }
+
+        script(type='text/javascript').
+            function deluser(obj) {
+                $.ajax({
+                    type: "post",
+                    url: "/delUser?flag=" + Math.random(),
+                    data: "id=" + obj,
+                    success: function (data) {
+                        if (data == 'succ') {
+                            $("#tr-" + obj).remove();
+                            alert("删除成功");
+                        } else {
+                            alert("本次删除失败");
+                        }
+                    }
+                });
+            }
+    body
+        form#form1
+            h2(style='text-align:center') 删除一个老用户
+            table(style='margin:0 auto;')
+                tr
+                    th 用户名
+                    th 年龄
+                    th 通用密码
+                    th 操作
+                each user in JSON.parse(results)
+                    tr(id='tr-' + user._id)
+                        td=user.name
+                        td=user.age
+                        td=user.likes
+                        td
+                            input#delbut(type='button',value='删除',onclick='deluser(\'' + user._id + '\')')
+            a(href='/index',title='返回主页',class='sty') 返回主页信息<br/>

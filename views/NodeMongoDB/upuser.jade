@@ -1,0 +1,88 @@
+//-更新用户
+doctype html
+html
+    head
+        title 更新一个老用户
+        script(type='text/javascript',src="../../../public/javascripts/jquery-2.2.4.min.js")
+        script(type='text/javascript',src='../../public/javascripts/CommonJS.js')
+        style(type='text/css').
+            .sty {
+                cursor: pointer;
+                font-size: 20px;
+                text-decoration: none;
+            }
+
+            .txtc {
+                width: 100px;
+                text-align: left;
+            }
+
+        script(type='text/javascript').
+            var upid=-1;
+            //更新数据在下一行追加数据
+            function openuser(id,name,age,likes){
+                if(id==undefined){
+                    alert('请在页面按流程操作');
+                    return;
+                }
+                if(upid!=-1){
+                    if(confirm('您有未保存的更新，是否撤销？')){
+                        $('#trtr-'+upid).remove();
+                    }else{
+                        return;
+                    };
+                }
+
+                $('#tr-'+id).after('<tr id=\'trtr-'+id+'\'><td><input type=\'text\' id=\'upname\' value=\''+name+'\'/></td>' +
+                        '<td><input id=\'upage\' type=\'text\' name=\'upage\' value=\''+age+'\' onkeyup=\'this.value=value.onlyNum(0,3,false);\'></td>' +
+                        '<td><textarea cols=\'20\' rows=\'3\' id=\'uplikes\'>'+likes+'</textarea></td>' +
+                        '<td><input type=\'button\' onclick=saveup(\''+id+'\') style=\'background:rgba(128, 111, 78, 0.43);\'  value=\'确认\'/></td></tr>');
+                upid=id;
+            }
+            function saveup(id) {
+                var name=$('#upname').val();
+                var age=$('#upage').val();
+                var likes=$('#uplikes').val();
+                //确保更新信息完整性
+                if(name==''||age==''||likes==''){
+                    alert('请确认您更新信息完整！');
+                    $('#upname').focus();
+                    retrun;
+                }
+                //采用异步更新，更新完毕刷新页面
+                $.ajax({
+                    type: 'post',
+                    url: '/upUser?flag=' + Math.random(),
+                    data: 'id='+id+'&name='+name+'&age='+age+'&likes='+likes,
+                    success: function (data) {
+                        //后台接受到更新请求
+                        if (data == 'getknow') {
+                            //删除更新框并重置更新框标识
+                            $('#trtr-' + id).remove();
+                            upid=-1;
+                            alert('提交更新成功，点击确认页面将自动刷新');
+                            //刷新页面
+                            window.location.reload();
+                        } else {
+                            alert('提交更新失败');
+                        }
+                    }
+                });
+            }
+    body
+        form#form1
+            h2(style='text-align:center') 更新一个老用户
+            table(style='margin:0 auto;')
+                tr
+                    th 名称
+                    th 年龄
+                    th 爱好
+                    th 操作
+                each user in JSON.parse(results)
+                    tr(id='tr-' + user._id)
+                        td=user.name
+                        td=user.age
+                        td=user.likes
+                        td
+                            input#delbut(type='button',value='更新',onclick='openuser(\''+user._id+'\',\''+user.name+'\',\''+user.age+'\',\''+user.likes+'\')')
+            a(href='/index',title='返回主页',class='sty') 返回主页信息<br/>

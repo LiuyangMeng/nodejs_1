@@ -19,10 +19,13 @@ app.use(urlencodeparser);
 // 如：/index.html   如果public中有index.html,则返回public中的index.html,如果没有，则查询下列app.get('/index.html',....)方法返回
 app.use(express.static(global.APP_PATH));
 
+//使查看源码具有结构化
+app.locals.pretty = true;
+
 //使用路由集中处理全部路径
 var rount=express.Router();
 rount.use(function(req,res,next){
-    console.log('经过路由器:'+req.baseUrl);
+    console.log('Router||hostname:' + req.hostname + ',ip:' + CommonTools.getIPAdress() + ',fresh:' + req.fresh + ',path:' + req.path+ ',baseurl:' + req.baseUrl);
     next();
 });
 app.use('*',rount);
@@ -30,70 +33,64 @@ app.use('*',rount);
 
 //主页get请求
 app.get('/', function (req, res) {
-    console.log('主页get请求');
-    console.log('hostname:' + req.hostname + ',ip:' + req.ip + ',fresh:' + req.fresh + ',path:' + req.path);
-    console.log(CommonTools.getIPAdress());
-    curdMongoDao.execMongoDB_conn(req,res,curdMongoDao.insertJavacol,null);
-    res.send('hello world get');
+    console.log('/ 主页get请求');
+    res.send('hello world get:nodejs+mongodb');
 
 });
 
 // /index请求
 app.get('/index', function (req, res) {
     console.log('/index 被请求');
-    res.render(global.APP_PATH+'/views/NodeCURD/index.jade');
-});
-
-/*// /index请求
-app.get('/index.html', function (req, res) {
-    console.log('/index.html 被请求');
-    res.sendFile(global.APP_PATH+'/views/NodeCURD/index.html');
+    res.render(global.APP_PATH+'/views/NodeMongoDB/index.jade');
 });
 
 // /showUsers请求
 app.get('/showUsers', function (req, res) {
     console.log('/showUsers 被请求');
-    curdDao.userListSql_Pool(req, res, 'select uname,uage,upass from user where id>0', null, null);
+    curdMongoDao.execMongoDB_conn(req,res,null,curdMongoDao.searchUsers,null);
 });
 
 // /pre_addUser请求
 app.get('/pre_addUser', function (req, res) {
     console.log('/pre_addUser 被请求');
-    res.render(global.APP_PATH+'/views/NodeCURD/adduser.jade');
+    res.render(global.APP_PATH+'/views/NodeMongoDB/adduser.jade');
 });
 
 //  /addUser 请求 post
 app.post('/addUser', urlencodeparser, function (req, res) {
     console.log('/addUser 被请求');
     //获取前台参数
-    var param = [req.body.uname,req.body.uage,req.body.upass];
-    // res.render(global.APP_PATH+'/views/NodeCURD/adduser.jade',{ 'uname':req.body.uname,'uage':req.body.uage,'upass':req.body.upass });
-    curdDao.addUserSql_Pool(req, res, 'insert into user(uname,uage,upass) value (?,?,?)', param, null);
+    if(req.body.name==undefined||req.body.age==undefined||req.body.likes==undefined){
+        res.render(global.APP_PATH+'/views/NodeMongoDB/adduser.jade');
+        return;
+    }
+    var param = [req.body.name,req.body.age,req.body.likes.split(',')];
+    curdMongoDao.execMongoDB_conn(req,res,param,curdMongoDao.insertUser,null);
 });
 
 // /pre_delUser请求
 app.get('/pre_delUser', function (req, res) {
     console.log('/pre_delUser 被请求');
-    curdDao.userListDelSql_Pool(req, res, 'select id,uname,uage,upass from user', null, null);
+    curdMongoDao.execMongoDB_conn(req,res,null,curdMongoDao.presearchUsers,null);
 });
 
 // /delUser请求 post
 app.post('/delUser',urlencodeparser,function (req, res) {
     console.log('/delUser 被请求');
     //获取链接后面带着的参数 req.body.id
-    var param=req.body.id;
+    var param=[req.body.id];
     if(param==undefined||param==''){
         //参数错误，无法删除
         res.header('Content-Type', 'text/plain');
         res.end('fail');
     }
-    curdDao.delUserSql_Pool(req,res,'delete from user where id=?',[param],null,null);
+    curdMongoDao.execMongoDB_conn(req,res,param,curdMongoDao.deleteUsersById,null);
 });
 
 // /pre_upUser请求
 app.get('/pre_upUser', function (req, res) {
     console.log('/pre_upUser 被请求');
-    curdDao.userListUpSql_Pool(req, res, 'select id,uname,uage,upass from user', null, null);
+    curdMongoDao.execMongoDB_conn(req,res,null,curdMongoDao.preupdateUsers,null);
 });
 
 // /upUser请求 post
@@ -103,16 +100,16 @@ app.post('/upUser',urlencodeparser,function (req, res) {
     var id=req.body.id;
     var uname=req.body.name;
     var uage=req.body.age;
-    var upass=req.body.pass;
+    var ulikes=req.body.likes;
 
     res.header('Content-Type', 'text/plain');
-    if(id==undefined||id==''||uname==undefined||uname==''||uage==undefined||uage==''||upass==undefined||upass==''){
+    if(id==undefined||id==''||uname==undefined||uname==''||uage==undefined||uage==''||ulikes==undefined||ulikes==''){
         //参数错误，无法删除
         res.end('fail');
     }
-    curdDao.upUserSql_Pool(req,res,'update user set uname=?,uage=?,upass=? where id=?',[uname,uage,upass,id],null,null);
+    curdMongoDao.execMongoDB_conn(req,res,[id,uname,uage,ulikes.split(',')],curdMongoDao.updateUsersById,null);
     res.end('getknow');
-});*/
+});
 
 //其他访问转到404页面 get post
 app.get('*', function (req, res) {

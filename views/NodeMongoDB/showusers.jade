@@ -1,0 +1,38 @@
+//-用户列表
+doctype html
+html
+    head
+        title= 用户列表信息
+        style.
+            .sty {
+                cursor: pointer;
+                font-size: 20px;
+                text-decoration: none;
+            }
+            table tr td{
+                width:100px;
+                text-align: left;
+            }
+
+            table tr th {
+                width: 100px;
+                text-align: left;
+            }
+    body
+        h2(style='text-align:center') 用户列表显示 &nbsp;&nbsp;
+        table(style='margin:0 auto;border: solid 1px #a0c6e5;')
+            tr
+                th 用户名
+                th 年龄
+                th 爱好
+            each user in JSON.parse(results)
+             tr
+                td=user.name
+                td=user.age
+                //-each like in user.likes
+                   li= like
+                td= user.likes
+
+        a(href='/index',title='返回主页',class='sty') 返回主页信息<br/>
+
+

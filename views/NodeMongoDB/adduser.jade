@@ -1,0 +1,73 @@
+//-增加用户
+doctype html
+html
+    head
+        title 增加一个新用户
+        script(type='text/javascript',src='../../public/javascripts/jquery-2.2.4.min.js')
+        script(type='text/javascript',src='../../public/javascripts/CommonJS.js')
+        style(type='text/css').
+            .sty {
+                cursor: pointer;
+                font-size: 20px;
+                text-decoration: none;
+            }
+
+            .txtc {
+                width: 100px;
+                text-align: left;
+            }
+
+        script(type='text/javascript').
+            //提交数据前进行数据校验
+            function subuser() {
+                if ($('#name') == undefined || $('#name').val().trim() == '') {
+                    alert('名称不能为空');
+                    return;
+                }
+                $('#age').val($('#age').val().onlyNum(0,3,false));
+                if ($('#age') == undefined || $('#age').val() == '') {
+                    alert('年龄不能为空');
+                    return;
+                }
+                if ($('#likes') == undefined || $('#likes').val() == '') {
+                    alert('爱好不能为空');
+                    return;
+                }
+
+
+                $('#form1').submit();
+            }
+            //网页加载后处理空值问题
+            function checknull(){
+                if($('#name').val()=='undefined'){
+                    $('#name').val('');
+                }
+                if ($('#age').val() =='undefined') {
+                    $('#age').val('');
+                }
+                if ($('#likes').val() == 'undefined') {
+                    $('#likes').val('');
+                }
+            }
+    body(onload='checknull()')
+        form#form1(action='/addUser' method='post')
+            h2(style='text-align:center') 增加一个新用户
+            table(style='margin:0 auto;')
+                tr
+                    td
+                        label 名称:
+                    td(class='txtc')
+                        input#name(type='text',name='name',value='#{name}',tabindex=1)
+                tr
+                    td
+                        label 年龄:
+                    td(class='txtc')
+                        input#age(type='text',name='age',value='#{age}',onkeyup="this.value=value.onlyNum(0,3,false);",tabindex=2)
+                tr
+                    td
+                        label 爱好:
+                    td(class='txtc')
+                        textarea#likes(name='likes',cols=20,rows=3,placeholder='您可以输入多个爱好，每个之间使用英文逗号\',\'分开',tabindex=3)
+                tr
+                    td(colspan=2)
+                        input#sub1(type='button',value='提交数据',onclick='subuser();')
