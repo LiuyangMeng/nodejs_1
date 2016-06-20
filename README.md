@@ -2,6 +2,9 @@
 
 This project for test nodejs new function.
 
+2016-06-20
+MongoDB(conn) TO MongoDB(pool)
+
 2016-06-16
 finish Nodejs+MongoDB(coon)+jade CURD,you can test
 

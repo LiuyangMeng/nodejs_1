@@ -7,7 +7,7 @@ var app = express();
 //引入自定义模块
 var CommonTools = require('../Tools/nodeCommonTools');
 //引入db的dao层
-var curdMongoDao = require('./curdMongoDao');
+var curdMongoDao = require('./curdMongoPool');
 
 // 请求 post
 var bodyparser = require('body-parser');
@@ -47,7 +47,7 @@ app.get('/index', function (req, res) {
 // /showUsers请求
 app.get('/showUsers', function (req, res) {
     console.log('/showUsers 被请求');
-    curdMongoDao.execMongoDB_conn(req,res,null,curdMongoDao.searchUsers,null);
+    curdMongoDao.execMongoDB_pool(req,res,null,curdMongoDao.searchUsers,null);
 });
 
 // /pre_addUser请求
@@ -65,13 +65,13 @@ app.post('/addUser', urlencodeparser, function (req, res) {
         return;
     }
     var param = [req.body.name,req.body.age,req.body.likes.split(',')];
-    curdMongoDao.execMongoDB_conn(req,res,param,curdMongoDao.insertUser,null);
+    curdMongoDao.execMongoDB_pool(req,res,param,curdMongoDao.insertUser,null);
 });
 
 // /pre_delUser请求
 app.get('/pre_delUser', function (req, res) {
     console.log('/pre_delUser 被请求');
-    curdMongoDao.execMongoDB_conn(req,res,null,curdMongoDao.presearchUsers,null);
+    curdMongoDao.execMongoDB_pool(req,res,null,curdMongoDao.presearchUsers,null);
 });
 
 // /delUser请求 post
@@ -84,13 +84,13 @@ app.post('/delUser',urlencodeparser,function (req, res) {
         res.header('Content-Type', 'text/plain');
         res.end('fail');
     }
-    curdMongoDao.execMongoDB_conn(req,res,param,curdMongoDao.deleteUsersById,null);
+    curdMongoDao.execMongoDB_pool(req,res,param,curdMongoDao.deleteUsersById,null);
 });
 
 // /pre_upUser请求
 app.get('/pre_upUser', function (req, res) {
     console.log('/pre_upUser 被请求');
-    curdMongoDao.execMongoDB_conn(req,res,null,curdMongoDao.preupdateUsers,null);
+    curdMongoDao.execMongoDB_pool(req,res,null,curdMongoDao.preupdateUsers,null);
 });
 
 // /upUser请求 post
@@ -107,7 +107,7 @@ app.post('/upUser',urlencodeparser,function (req, res) {
         //参数错误，无法删除
         res.end('fail');
     }
-    curdMongoDao.execMongoDB_conn(req,res,[id,uname,uage,ulikes.split(',')],curdMongoDao.updateUsersById,null);
+    curdMongoDao.execMongoDB_pool(req,res,[id,uname,uage,ulikes.split(',')],curdMongoDao.updateUsersById,null);
     res.end('getknow');
 });
 
