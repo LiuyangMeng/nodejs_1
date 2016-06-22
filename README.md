@@ -2,6 +2,9 @@
 
 This project for test nodejs new function.
 
+2016-06-22
+add nodesimple.js
+
 2016-06-20
 MongoDB(conn) TO MongoDB(pool)
 
@@ -9,7 +12,7 @@ MongoDB(conn) TO MongoDB(pool)
 finish Nodejs+MongoDB(coon)+jade CURD,you can test
 
 2016-06-07
-finish Nodejs+mysql(pool)+jade CURD,you can test
+finish Nodejs+mysql(pool)+jade CURD,  can test
 next,i will try to use mongodb
 
 2016-06-03
