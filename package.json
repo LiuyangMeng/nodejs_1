@@ -7,14 +7,14 @@
   },
   "dependencies": {
     "mongodb":"~2.1.18",
-    "mysql":"~2.10.2",
+    "mysql":"~2.14.0",
     "multer": "~1.1.0",
     "body-parser": "~1.13.2",
     "cookie-parser": "~1.4.2",
     "express": "~4.13.1",
-    "debug": "~2.2.0",
+    "debug": "~2.6.9",
     "jade": "~1.11.0",
-    "morgan": "~1.6.1",
+    "morgan": "~1.9.1",
     "serve-favicon": "~2.3.0"
   }
 }
